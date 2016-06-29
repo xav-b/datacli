@@ -1,0 +1,3 @@
+# tested under Python 3.4.2
+prompt-toolkit==1.0.3
+click==6.6
