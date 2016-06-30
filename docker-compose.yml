@@ -1,0 +1,21 @@
+version: '2'
+
+services:
+
+  mongo:
+    image: mongo:3.0.6
+    ports:
+      - 27017:27017
+    command: mongod --smallfiles
+
+  lab:
+    stdin_open: true
+    tty: true
+    build: .
+    working_dir: /app
+    volumes:
+      - .:/app
+    links:
+      - mongo
+    environment:
+      - PYTHONPATH=/app
