@@ -11,7 +11,9 @@ import click
 import pymongo
 from prompt_toolkit import prompt
 from prompt_toolkit.history import InMemoryHistory
+from prompt_toolkit.auto_suggest import AutoSuggestFromHistory
 from pygments.lexers.sql import MySqlLexer
+from pygments.styles import get_style_by_name
 
 from mgo.__init__ import __version__
 from mgo.completer import MGOCompleter
@@ -22,38 +24,47 @@ log = logging.getLogger('mgocli')
 MONGO_DEFAULT_ADDR = 'mongo'
 
 
-def is_connected(conn, debug=False):
-    try:
-        info = conn.server_info()
-        print('successfully connected')
-        if debug:
-            print(info)
-    except pymongo.errors.ServerSelectionTimeoutError as err:
-        print(err)
-        return false
-
-    return True
-
-
 def connection(addr, database, user=None, never_prompt=False):
     db_uri = 'mongodb://{}/{}'.format(addr, database)
     conn = pymongo.MongoClient(db_uri)
 
     if user and not never_prompt:
-        passwd = click.prompt('Password', hide_input=True, show_default=False, type=str)
+        passwd_prompt = ' --> MongoDB password for user {}'.format(user)
+        passwd = click.prompt(passwd_prompt, hide_input=True, show_default=False, type=str)
         conn[database].authenticate(user, password=passwd)
-
-    if not is_connected(conn):
-        sys.exit(1)
 
     return conn
 
 
-def process_input(query):
-    print('You said: %s' % query)
+def mgo_prompt(database, conn, style='colorful'):
+    history = InMemoryHistory()
+    prompt_style = '[ mgo::{uri}::{database} ] >>> '.format(uri=conn.address[0], database=database)
+    prompt_opts = {
+        'completer': MGOCompleter,
+        'history': history,
+        'lexer': MySqlLexer,
+        'auto_suggest': AutoSuggestFromHistory(),
+        'style': get_style_by_name(style)
+    }
+
+    return prompt(prompt_style, **prompt_opts)
 
 
-# TODO default docs limit ?
+def configure_logger():
+    log.setLevel(logging.DEBUG)
+    handler = logging.StreamHandler()
+    formatter = logging.Formatter('[%(asctime)s] %(name)-6s :: %(levelname)-6s - %(message)s')
+    handler.setFormatter(formatter)
+    log.addHandler(handler)
+
+
+def process_input(db, query, row_limit):
+    log.info('You said: %s' % query)
+    cursor = db.appturbo_open.find().sort('_id', -1).limit(row_limit)
+    for item in cursor:
+        log.info(item)
+
+
 # TODO default sort order ?
 @click.command()
 @click.option('-a', '--address', default=MONGO_DEFAULT_ADDR, envvar='MGO_HOST',
@@ -72,28 +83,25 @@ def cli(database, address, user, never_prompt, version, row_limit):
         print('mgocli version: {}'.format(__version__))
         sys.exit(0)
 
+    configure_logger()
+
     conn = connection(address, database, user, never_prompt)
 
-    prompt_style = '[ {uri}/{database} ] >>> '.format(uri=conn.address, database=database)
-    history = InMemoryHistory()
-    prompt_opts = {
-        'completer': MGOCompleter,
-        'history': history,
-        'lexer': MySqlLexer
-    }
 
     while True:
         try:
-            query = prompt(prompt_style, **prompt_opts)
+            query = mgo_prompt(database, conn)
             query = query.lower()
             if query == 'exit':
                 break
-            process_input(query)
-        except KeyboardInterrupt as err:
+            process_input(conn[database], query, row_limit)
+        except KeyboardInterrupt:
             break  # Control-C pressed
         except EOFError:
             break  # Control-D pressed
-    print('Bye!')
+
+    conn.close()
+    log.info('Bye!')
 
 if __name__ == '__main__':
     cli()
