@@ -1,7 +1,7 @@
 FROM java:8
 
 # install drill
-ADD ./drill-storage.json /opt/
+ADD ./drill-storage.json /opt/drill-storage.json
 ADD ./bootstrap.sh /opt/bootstrap-drill.sh
 RUN /opt/bootstrap-drill.sh
 

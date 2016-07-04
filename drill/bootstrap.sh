@@ -29,4 +29,8 @@ main() {
   dl_tar ${pkg_url}
 }
 
-main $@
+if [[ "$1" == "storage" ]]; then
+  configure_storage $2
+else
+  main $@
+fi

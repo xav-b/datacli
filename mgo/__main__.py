@@ -8,7 +8,7 @@ import sys
 import logging
 
 import click
-import pymongo
+from pydrill.client import PyDrill
 from prompt_toolkit import prompt
 from prompt_toolkit.history import InMemoryHistory
 from prompt_toolkit.auto_suggest import AutoSuggestFromHistory
@@ -21,24 +21,13 @@ from mgo.completer import MGOCompleter
 log = logging.getLogger('mgocli')
 
 # default to docker style dns
-MONGO_DEFAULT_ADDR = 'mongo'
+DRILL_DEFAULT_HOST = 'drill'
+DRILL_DEFAULT_PORT = 8047
 
 
-def connection(addr, database, user=None, never_prompt=False):
-    db_uri = 'mongodb://{}/{}'.format(addr, database)
-    conn = pymongo.MongoClient(db_uri)
-
-    if user and not never_prompt:
-        passwd_prompt = ' --> MongoDB password for user {}'.format(user)
-        passwd = click.prompt(passwd_prompt, hide_input=True, show_default=False, type=str)
-        conn[database].authenticate(user, password=passwd)
-
-    return conn
-
-
-def mgo_prompt(database, conn, style='colorful'):
+def mgo_prompt(database, host, style='colorful'):
     history = InMemoryHistory()
-    prompt_style = '[ mgo::{uri}::{database} ] >>> '.format(uri=conn.address[0], database=database)
+    prompt_style = '[ mgo::{uri}::{database} ] >>> '.format(uri=host, database=database)
     prompt_opts = {
         'completer': MGOCompleter,
         'history': history,
@@ -58,26 +47,23 @@ def configure_logger():
     log.addHandler(handler)
 
 
-def process_input(db, query, row_limit):
-    log.info('You said: %s' % query)
-    cursor = db.appturbo_open.find().sort('_id', -1).limit(row_limit)
-    for item in cursor:
-        log.info(item)
+def process_input(conn, query):
+    log.info('sending query to drill [{}]'.format(query))
+    for res in conn.query(query):
+        print(res)
 
 
 # TODO default sort order ?
 @click.command()
-@click.option('-a', '--address', default=MONGO_DEFAULT_ADDR, envvar='MGO_HOST',
-              help='Host address of the mongodb database.')
-@click.option('-u', '--user', envvar='MGO_USER',
-              help='User name to connect to the postgres database.')
-@click.option('-w', '--no-password', 'never_prompt', is_flag=True,
-              default=False, help='Never prompt for password.')
+@click.option('-H', '--host', default=DRILL_DEFAULT_HOST, envvar='DRILL_HOST',
+              help='Host address of the drillbit server.')
+@click.option('-p', '--port', default=DRILL_DEFAULT_PORT, envvar='DRILL_PORT',
+              help='Port number of the drillbit server.')
 @click.option('-v', '--version', is_flag=True, help='Version of pgcli.')
 @click.option('-r', '--row-limit', default=10, envvar='MGO_ROW_LIMIT', type=click.INT,
               help='Set threshold for row limit prompt')
 @click.argument('database', envvar='MGO_DB', nargs=1)
-def cli(database, address, user, never_prompt, version, row_limit):
+def cli(database, host, port, row_limit, version):
     """Cli entry point."""
     if version:
         print('mgocli version: {}'.format(__version__))
@@ -85,16 +71,19 @@ def cli(database, address, user, never_prompt, version, row_limit):
 
     configure_logger()
 
-    conn = connection(address, database, user, never_prompt)
+    conn = PyDrill(host=host, port=port)
+    if not conn.is_active():
+        log.error('unable to reach Drill server')
+        return 1
 
-
+    log.info('connected to Drillbit')
     while True:
         try:
             query = mgo_prompt(database, conn)
             query = query.lower()
             if query == 'exit':
                 break
-            process_input(conn[database], query, row_limit)
+            process_input(conn, query)
         except KeyboardInterrupt:
             break  # Control-C pressed
         except EOFError:
@@ -102,6 +91,7 @@ def cli(database, address, user, never_prompt, version, row_limit):
 
     conn.close()
     log.info('Bye!')
+    return 0
 
 if __name__ == '__main__':
-    cli()
+    sys.exit(cli())
