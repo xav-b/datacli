@@ -3,13 +3,13 @@ version: '2'
 services:
 
   mongo:
-    build: ./mongodb
+    build: ./tools/mongodb
     ports:
       - 27017:27017
     command: mongod --smallfiles
 
   drill:
-    build: ./drill
+    build: ./tools/drill
     stdin_open: true
     tty: true
     links:

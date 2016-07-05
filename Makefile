@@ -1,8 +1,10 @@
 # Makefile
 # vim:ft=make
 
-include ./Python.mk
+include ./tools/Common.mk
+include ./tools/Python.mk
 
-container.init:
+.PHONY: container.build
+container.build: ## build, start and initialize containers cluster
 	@docker-compose up -d
-	@./container-init.sh
+	@./containers/init.sh

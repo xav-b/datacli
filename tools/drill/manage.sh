@@ -12,7 +12,7 @@ dl_tar() {
 
 configure_storage() {
   local storage_cfg_file=${1:-/opt/drill-storage.json}
-  local drill_server_url="http://localhost:8047"
+  local drill_server_url=${2:-"http://localhost:8047"}
 
   curl \
     -X POST \
@@ -29,8 +29,11 @@ main() {
   dl_tar ${pkg_url}
 }
 
-if [[ "$1" == "storage" ]]; then
-  configure_storage $2
-else
+if [[ "$1" == "bootstrap" ]]; then
   main $@
+elif [[ "$1" == "storage" ]]; then
+  configure_storage $2 $3
+else
+  echo "unknown command '$1'"
+  exit 1
 fi

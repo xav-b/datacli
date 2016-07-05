@@ -15,7 +15,7 @@ install.hack: ## locally install library and dev requirements
 
 .PHONY: lint
 lint: ## lint library and test codes
-	pylint --reports no $(PROJECT)/ tests/
+	flake8 $(PROJECT)/ tests/
 
 .PHONY: test
 test: warn_missing_linters ## run test suite
