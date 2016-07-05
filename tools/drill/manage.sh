@@ -25,12 +25,13 @@ main() {
   local drill_version=${1:-"1.7.0"}
   local pkg_url="${DRILL_DL_URL}/drill-${drill_version}/apache-drill-${drill_version}.tar.gz"
 
-  java --version
+  echo "downloading ${pkg_url}"
   dl_tar ${pkg_url}
 }
 
 if [[ "$1" == "bootstrap" ]]; then
-  main $@
+  #shift
+  main $2
 elif [[ "$1" == "storage" ]]; then
   configure_storage $2 $3
 else

@@ -8,6 +8,8 @@ import sys
 import logging
 
 import click
+import IPython
+import pandas as pd
 from pydrill.client import PyDrill
 from prompt_toolkit import prompt
 from prompt_toolkit.history import InMemoryHistory
@@ -25,8 +27,7 @@ DRILL_DEFAULT_HOST = 'drill'
 DRILL_DEFAULT_PORT = 8047
 
 
-def mgo_prompt(database, host, style='colorful'):
-    history = InMemoryHistory()
+def mgo_prompt(database, host, history, style='colorful'):
     prompt_style = '[ mgo::{uri}::{database} ] >>> '.format(uri=host, database=database)
     prompt_opts = {
         'completer': MGOCompleter,
@@ -47,10 +48,18 @@ def configure_logger():
     log.addHandler(handler)
 
 
-def process_input(conn, query):
+def process_input(conn, query_tpl, is_interactive):
+    opts = {
+        'db': 'appturbo.analytics_preprod'
+    }
+    query = query_tpl.format(**opts)
     log.info('sending query to drill [{}]'.format(query))
-    for res in conn.query(query):
-        print(res)
+    df = pd.DataFrame([row for row in conn.query(query)])
+    print(df.head())
+    print()
+    if is_interactive:
+        # drop an interpreter for analyzing results
+        IPython.embed()
 
 
 # TODO default sort order ?
@@ -76,21 +85,26 @@ def cli(database, host, port, row_limit, version):
         log.error('unable to reach Drill server')
         return 1
 
+    history = InMemoryHistory()
     log.info('connected to Drillbit')
     while True:
         try:
-            query = mgo_prompt(database, conn)
+            query = mgo_prompt(database, host, history)
             query = query.lower()
+            # TODO help
             if query == 'exit':
                 break
-            process_input(conn, query)
+            elif query == '':
+                log.warning('empty query, skipping processing')
+                continue
+
+            process_input(conn, query, True)
         except KeyboardInterrupt:
             break  # Control-C pressed
         except EOFError:
             break  # Control-D pressed
 
-    conn.close()
-    log.info('Bye!')
+    log.info('shutting down...')
     return 0
 
 if __name__ == '__main__':

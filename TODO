@@ -1,3 +1,6 @@
 # vi: ft=vimwiki
 
 * [ ] Add setuptools scripts
+* [ ] Register containers on registry
+* [ ] Document usage
+* [ ] Use proper `.env`

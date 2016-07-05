@@ -1,16 +1,32 @@
 # MongoDB Cli
 
-## SQL
+## Getting started
 
-- [SQL To Mongo Mapping](https://docs.mongodb.com/manual/reference/sql-comparison/)
+`make container.build` will start and initialize [MongoDB](), [Drill]()
+and `mgocli` with everything installed.
+
+It is still possible to register external data sources :
+
+```Bash
+$ cp ./tools/drill/mongo-storage-plugin.json custom-storage.json
+$ $EDITOR custom-storage.json
+$ ./tools/drill/manage.sh storage ./custom-storage.json http://$(docker-machine ip default):8047
+{
+  "result" : "success"
+}
+```
+
+## Usage
+
+### Mgocli
+
+```Bash
+$ ./mgo/__main__.py -H 192.168.99.100 appturbo
+```
+
+### Drill Repl
 
 ```sql
-$ # load mongodb db tests
-$ docker exec -it $(basename $PWD)_mongo_1 /opt/bootstrap.sh
-
-$ # configure storage (todo)
-$ docker exec -it $(basename $PWD)_drill_1 /opt/bootstrap.sh storage
-
 $ # query data
 $ docker exec -it $(basename $PWD)_drill_1 /opt/apache-drill-1.7.0/bin/drill-localhost
 0: jdbc:drill:drillbit=localhost> SHOW DATABASES;
