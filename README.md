@@ -1,5 +1,7 @@
 # MongoDB Cli
 
+[![Build Status](https://travis-ci.org/hackliff/mgocli.svg?branch=master)](https://travis-ci.org/hackliff/mgocli)
+
 ## Getting started
 
 `make container.build` will start and initialize [MongoDB](), [Drill]()
@@ -21,7 +23,18 @@ $ ./tools/drill/manage.sh storage ./custom-storage.json http://$(docker-machine 
 ### Mgocli
 
 ```Bash
-$ ./mgo/__main__.py -H 192.168.99.100 appturbo
+$ ./mgo/__main__.py -H $(docker-machine ip default) appturbo
+[2016-07-06 06:38:24,564] mgocli :: INFO   - connected to Drillbit
+[ mgo::192.168.99.100::appturbo  ] >>> SHOW DATABASES
+[2016-07-06 06:38:48,391] mgocli :: INFO   - sending query to drill
+[show databases]
+      SCHEMA_NAME
+0  INFORMATION_SCHEMA
+1          cp.default
+2         dfs.default
+3            dfs.root
+4             dfs.tmp
+
 ```
 
 ### Drill Repl

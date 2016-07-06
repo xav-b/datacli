@@ -1,6 +1,15 @@
 # vi: ft=vimwiki
 
-* [ ] Add setuptools scripts
-* [ ] Register containers on registry
+* [ ] Test other data sources
+* [ ] Challenge MongoDB interface with tricky queries, and implement defensive code
+* [x] Add setuptools scripts
+* [ ] precise project scope and rename it
+* [ ] Register drill container on registry
+* [ ] register on pypy
 * [ ] Document usage
 * [ ] Use proper `.env`
+* [ ] Emulate the connection to a database with drill data source registration
+* [ ] Properly define ipython shell
+* [ ] help command
+* [ ] proper SQL and custom commands completion
+* [ ] string templating and global options management

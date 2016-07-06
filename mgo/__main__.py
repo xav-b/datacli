@@ -8,7 +8,8 @@ import sys
 import logging
 
 import click
-import IPython
+from traitlets.config.loader import Config
+from IPython.terminal.embed import InteractiveShellEmbed
 import pandas as pd
 from pydrill.client import PyDrill
 from prompt_toolkit import prompt
@@ -20,7 +21,17 @@ from pygments.styles import get_style_by_name
 from mgo.__init__ import __version__
 from mgo.completer import MGOCompleter
 
+EXIT_QUERIES = ['quit', 'exit']
+BLACKLIST_QUERIES = ['']
+
 log = logging.getLogger('mgocli')
+# documentation : https://ipython.org/ipython-doc/2/interactive/reference.html#embedding
+# https://ipython.org/ipython-doc/1/config/ipython.html
+ipcfg = Config()
+ipshell = InteractiveShellEmbed(
+    config=Config(),
+    banner1='--> Dropping into IPython for interactive analysis',
+    exit_msg='--> leaving interactive mode')
 
 # default to docker style dns
 DRILL_DEFAULT_HOST = 'drill'
@@ -48,9 +59,9 @@ def configure_logger():
     log.addHandler(handler)
 
 
-def process_input(conn, query_tpl, is_interactive):
+def process_input(conn, db, query_tpl, is_interactive):
     opts = {
-        'db': 'appturbo.analytics_preprod'
+        'db': db
     }
     query = query_tpl.format(**opts)
     log.info('sending query to drill [{}]'.format(query))
@@ -59,7 +70,8 @@ def process_input(conn, query_tpl, is_interactive):
     print()
     if is_interactive:
         # drop an interpreter for analyzing results
-        IPython.embed()
+        # IPython.embed(header='interactive query result analysis')
+        ipshell('--> Hit Ctrl-D to exit interpreter and continue program.\n')
 
 
 # TODO default sort order ?
@@ -68,11 +80,11 @@ def process_input(conn, query_tpl, is_interactive):
               help='Host address of the drillbit server.')
 @click.option('-p', '--port', default=DRILL_DEFAULT_PORT, envvar='DRILL_PORT',
               help='Port number of the drillbit server.')
-@click.option('-v', '--version', is_flag=True, help='Version of pgcli.')
-@click.option('-r', '--row-limit', default=10, envvar='MGO_ROW_LIMIT', type=click.INT,
-              help='Set threshold for row limit prompt')
+@click.option('-v', '--version', is_flag=True, help='Version of mgocli.')
+@click.option('-i', '--interactive', is_flag=True,
+              help='Drop into an ipython shell with query result.')
 @click.argument('database', envvar='MGO_DB', nargs=1)
-def cli(database, host, port, row_limit, version):
+def cli(database, host, port, interactive, version):
     """Cli entry point."""
     if version:
         print('mgocli version: {}'.format(__version__))
@@ -92,13 +104,14 @@ def cli(database, host, port, row_limit, version):
             query = mgo_prompt(database, host, history)
             query = query.lower()
             # TODO help
-            if query == 'exit':
+            if query in EXIT_QUERIES:
+                log.warning('hit exit command')
                 break
-            elif query == '':
-                log.warning('empty query, skipping processing')
+            elif query in BLACKLIST_QUERIES:
+                log.warning('blacklisted query, skipping processing')
                 continue
 
-            process_input(conn, query, True)
+            process_input(conn, database, query, interactive)
         except KeyboardInterrupt:
             break  # Control-C pressed
         except EOFError:
