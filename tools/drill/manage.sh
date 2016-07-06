@@ -21,7 +21,12 @@ configure_storage() {
     ${drill_server_url}/storage/myplugin.json
 }
 
-main() {
+start_container() {
+  local container_image=${1:-"hack/drill"}
+  docker run -d --name drill -p=8047:8047 ${container_image}
+}
+
+bootstrap() {
   local drill_version=${1:-"1.7.0"}
   local pkg_url="${DRILL_DL_URL}/drill-${drill_version}/apache-drill-${drill_version}.tar.gz"
 
@@ -31,9 +36,13 @@ main() {
 
 if [[ "$1" == "bootstrap" ]]; then
   #shift
-  main $2
+  bootstrap $2
 elif [[ "$1" == "storage" ]]; then
   configure_storage $2 $3
+elif [[ "$1" == "run" ]]; then
+  # TODO safe run (like already running)
+  # TODO build it if necessary
+  start_container $2
 else
   echo "unknown command '$1'"
   exit 1

@@ -4,7 +4,7 @@
 * [ ] Challenge MongoDB interface with tricky queries, and implement defensive code
 * [x] Add setuptools scripts
 * [ ] precise project scope and rename it
-* [ ] Register drill container on registry
+* [x] Register drill container on registry
 * [ ] register on pypy
 * [ ] Document usage
 * [ ] Use proper `.env`
@@ -13,3 +13,4 @@
 * [ ] help command
 * [ ] proper SQL and custom commands completion
 * [ ] string templating and global options management
+* [ ] proper cli flags for tools/drill/manage.sh

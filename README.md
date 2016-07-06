@@ -1,6 +1,9 @@
 # MongoDB Cli
 
-[![Build Status](https://travis-ci.org/hackliff/mgocli.svg?branch=master)](https://travis-ci.org/hackliff/mgocli)
+| service               | status        |
+| --------------------- |:-------------:|
+| travis | [![Build Status](https://travis-ci.org/hackliff/mgocli.svg?branch=master)](https://travis-ci.org/hackliff/mgocli) |
+| quay.io/hackliff/drill | [![Docker Repository on Quay](https://quay.io/repository/hackliff/drill/status "Docker Repository on Quay")](https://quay.io/repository/hackliff/drill) |
 
 ## Getting started
 
