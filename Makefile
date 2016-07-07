@@ -19,6 +19,9 @@ container.drill.build: ## shortcut to build drill container
 	@./tools/drill/manage.sh build
 
 # TODO TEST flag instead
-package.test:
+release.test: ## simulate package upload on pypi
 	python setup.py sdist upload -r pypitest
 	make clean
+
+release: ## release new package version
+	@python setup.py sdist upload -r pypi

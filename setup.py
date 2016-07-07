@@ -18,8 +18,12 @@ REQUIREMENTS = [
     'click',
     'Pygments',
     'pydrill',
-    'pandas'
+    'pandas',
+    'ipython',
+    'traitlets'
 ]
+DESCRIPTION = ('Productive no-sql data sources exploration '
+               'with SQL, Pandas and shortcuts')
 
 
 def long_description():
@@ -35,7 +39,7 @@ setup(
     name=__project__,
     version=__version__,
     licence=__licence__,
-    description='Productive no-sql data sources exploration with SQL, Pandas and shortcuts',
+    description=DESCRIPTION,
     author=__author__,
     author_email='xavier.bruhiere@gmail.com',
     url='https://github.com/hackliff/datacli',

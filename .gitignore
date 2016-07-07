@@ -89,5 +89,5 @@ ENV/
 .ropeproject
 
 # provate stuff
-_*
+_private_*
 .pypirc
