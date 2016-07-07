@@ -35,7 +35,7 @@ setup(
     name=__project__,
     version=__version__,
     licence=__licence__,
-    description='Scalable glue for tentacular jobs',
+    description='Productive no-sql data sources exploration with SQL, Pandas and shortcuts',
     author=__author__,
     author_email='xavier.bruhiere@gmail.com',
     url='https://github.com/hackliff/datacli',

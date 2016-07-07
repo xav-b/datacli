@@ -29,9 +29,9 @@ $ ./tools/drill/manage.sh storage ./custom-storage.json http://$(docker-machine 
 ### Mgocli
 
 ```Bash
-$ ./mgo/__main__.py -H $(docker-machine ip default) appturbo
+$ ./datacli/__main__.py -H $(docker-machine ip default) appturbo
 [2016-07-06 06:38:24,564] datacli :: INFO   - connected to Drillbit
-[ mgo::192.168.99.100::appturbo  ] >>> SHOW DATABASES
+[ datacli::192.168.99.100::appturbo  ] >>> SHOW DATABASES
 [2016-07-06 06:38:48,391] datacli :: INFO   - sending query to drill
 [show databases]
       SCHEMA_NAME
