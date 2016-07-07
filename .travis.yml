@@ -4,7 +4,7 @@ python:
   - "3.4"
 
 script:
-    - coverage run --source mgocli -m py.test
+  - coverage run --source datacli -m py.test
 
 after_success:
-    - codecov
+  - codecov

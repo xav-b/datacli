@@ -1,4 +1,7 @@
-# MongoDB Cli
+# Data Cli
+
+> Productive no-sql data sources exploration with SQL, Pandas and
+> shortcuts
 
 | service               | status        |
 | --------------------- |:-------------:|
@@ -8,7 +11,7 @@
 ## Getting started
 
 `make container.build` will start and initialize [MongoDB](), [Drill]()
-and `mgocli` with everything installed.
+and `datacli` with everything installed.
 
 It is still possible to register external data sources :
 
@@ -27,9 +30,9 @@ $ ./tools/drill/manage.sh storage ./custom-storage.json http://$(docker-machine 
 
 ```Bash
 $ ./mgo/__main__.py -H $(docker-machine ip default) appturbo
-[2016-07-06 06:38:24,564] mgocli :: INFO   - connected to Drillbit
+[2016-07-06 06:38:24,564] datacli :: INFO   - connected to Drillbit
 [ mgo::192.168.99.100::appturbo  ] >>> SHOW DATABASES
-[2016-07-06 06:38:48,391] mgocli :: INFO   - sending query to drill
+[2016-07-06 06:38:48,391] datacli :: INFO   - sending query to drill
 [show databases]
       SCHEMA_NAME
 0  INFORMATION_SCHEMA
@@ -71,5 +74,7 @@ LIMIT 3;
 | 01005  | BARRE    | [-72.108354,42.409698]  | 4546   | MA     |
 +--------+----------+-------------------------+--------+--------+
 3 rows selected (0.325 seconds)
+
+0: jdbc:drill:drillbit=localhost> !quit
 ```
 

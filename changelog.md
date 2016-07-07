@@ -6,8 +6,9 @@ while version follows [SemVer](http://semver.org/).
 
 ---
 
-## [0.1.0] - 2016-07-03
+## [0.1.3] - 2016-07-03
 ### Added
+- `run` and `build` commands for `drill/manage.sh`
 
 ### Changed
 

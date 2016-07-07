@@ -3,10 +3,10 @@
 * [ ] Test other data sources
 * [ ] Challenge MongoDB interface with tricky queries, and implement defensive code
 * [x] Add setuptools scripts
-* [ ] precise project scope and rename it
+* [x] precise project scope and rename it
 * [x] Register drill container on registry
 * [ ] register on pypy
-* [ ] Document usage
+* [x] Document usage
 * [ ] Use proper `.env`
 * [ ] Emulate the connection to a database with drill data source registration
 * [ ] Properly define ipython shell
@@ -14,3 +14,6 @@
 * [ ] proper SQL and custom commands completion
 * [ ] string templating and global options management
 * [ ] proper cli flags for tools/drill/manage.sh
+# [ ] use codecov (harmonize coverage and pytest --cov)
+# [ ] write tests and use Travis
+* [ ] fix `make clean`

@@ -1,7 +1,10 @@
 #! /usr/bin/env bash
 
+__DIR="$( cd "$( dirname "${BASH_SOURCE[0]}"   )" && pwd   )"
 DRILL_DL_URL="http://apache.mesi.com.ar/drill"
 DEFAULT_PKG_PATH=/opt
+DEFAULT_DRILL_VERSION="1.7.0"
+DEFAULT_CONTAINER_IMAGE="hack/drill"
 
 dl_tar() {
   local archive_url="${1}"
@@ -22,12 +25,17 @@ configure_storage() {
 }
 
 start_container() {
-  local container_image=${1:-"hack/drill"}
-  docker run -d --name drill -p=8047:8047 ${container_image}
+  local container_image=${1:-"${DEFAULT_CONTAINER_IMAGE}"}
+  docker run -d -it --name drill -p=8047:8047 ${container_image}
+}
+
+build_container() {
+  local container_image=${1:-"${DEFAULT_CONTAINER_IMAGE}"}
+  cd ${__DIR} && docker build --rm -t ${container_image} .
 }
 
 bootstrap() {
-  local drill_version=${1:-"1.7.0"}
+  local drill_version=${1:-"${DEFAULT_DRILL_VERSION}"}
   local pkg_url="${DRILL_DL_URL}/drill-${drill_version}/apache-drill-${drill_version}.tar.gz"
 
   echo "downloading ${pkg_url}"
@@ -39,6 +47,8 @@ if [[ "$1" == "bootstrap" ]]; then
   bootstrap $2
 elif [[ "$1" == "storage" ]]; then
   configure_storage $2 $3
+elif [[ "$1" == "build" ]]; then
+  build_container $2
 elif [[ "$1" == "run" ]]; then
   # TODO safe run (like already running)
   # TODO build it if necessary

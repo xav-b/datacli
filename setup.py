@@ -11,7 +11,7 @@
 """
 
 from setuptools import setup, find_packages
-from octopus import __version__, __author__, __project__, __licence__
+from datacli import __version__, __author__, __project__, __licence__
 
 REQUIREMENTS = [
     'prompt-toolkit',
@@ -38,13 +38,15 @@ setup(
     description='Scalable glue for tentacular jobs',
     author=__author__,
     author_email='xavier.bruhiere@gmail.com',
+    url='https://github.com/hackliff/datacli',
     packages=find_packages(),
     long_description=long_description(),
     install_requires=REQUIREMENTS,
     entry_points='''
         [console_scripts]
-        mgocli=mgocli.__main__.cli
+        datacli=datacli.__main__.cli
     ''',
+    keywords=['data', 'database', 'analysis', 'cli', 'tool'],
     classifiers=[
         'Intended Audience :: Developers',
         'License :: OSI Approved :: MIT License',
