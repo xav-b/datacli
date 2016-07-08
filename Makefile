@@ -25,3 +25,4 @@ release.test: ## simulate package upload on pypi
 
 release: ## release new package version
 	@python setup.py sdist upload -r pypi
+

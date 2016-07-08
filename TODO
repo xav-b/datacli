@@ -1,19 +1,23 @@
 # vi: ft=vimwiki
 
-* [ ] Test other data sources
+== Todo - In order of priority ==
+
+* [ ] string templating and global options management
+* [ ] custom commands
 * [ ] Challenge MongoDB interface with tricky queries, and implement defensive code
+* [ ] proper SQL and custom commands completion
+* [ ] don't crash on exceptions
+* [ ] Properly define ipython shell
+* [ ] proper cli flags for tools/drill/manage.sh
+* [ ] Test other data sources
+* [ ] help command
+* [ ] Use proper `.env`
+* [ ] Emulate the connection to a database with drill data source registration
+* [ ] use codecov (harmonize coverage and pytest --cov)
+* [x] register on pypy
+* [x] write tests and use Travis
+* [x] fix `make clean`
 * [x] Add setuptools scripts
 * [x] precise project scope and rename it
 * [x] Register drill container on registry
-* [ ] register on pypy
 * [x] Document usage
-* [ ] Use proper `.env`
-* [ ] Emulate the connection to a database with drill data source registration
-* [ ] Properly define ipython shell
-* [ ] help command
-* [ ] proper SQL and custom commands completion
-* [ ] string templating and global options management
-* [ ] proper cli flags for tools/drill/manage.sh
-# [ ] use codecov (harmonize coverage and pytest --cov)
-# [ ] write tests and use Travis
-* [ ] fix `make clean`

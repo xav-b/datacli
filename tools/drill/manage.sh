@@ -42,6 +42,7 @@ bootstrap() {
   dl_tar ${pkg_url}
 }
 
+# TODO proper flags parsing http://wiki.bash-hackers.org/howto/getopts_tutorial
 if [[ "$1" == "bootstrap" ]]; then
   #shift
   bootstrap $2

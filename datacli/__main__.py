@@ -23,6 +23,8 @@ from datacli.completer import MGOCompleter
 
 EXIT_QUERIES = ['quit', 'exit']
 BLACKLIST_QUERIES = ['']
+# note : usuable with all requests
+DEFAULT_TIMEOUT = 10
 
 log = logging.getLogger('datacli')
 # documentation : https://ipython.org/ipython-doc/2/interactive/reference.html#embedding
@@ -65,7 +67,8 @@ def process_input(conn, db, query_tpl, is_interactive):
     }
     query = query_tpl.format(**opts)
     log.info('sending query to drill [{}]'.format(query))
-    df = pd.DataFrame([row for row in conn.query(query)])
+    # TODO pass a parameter from cli ?
+    df = pd.DataFrame([row for row in conn.query(query, timeout=DEFAULT_TIMEOUT)])
     print(df.head())
     print()
     if is_interactive:

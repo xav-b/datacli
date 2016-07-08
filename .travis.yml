@@ -6,7 +6,7 @@ python:
 
 install:
   #- python setup.py -q install
-  - pip install -r dev-requirements
+  - pip install -r dev-requirements.txt
 
 script:
   - coverage run --source datacli -m py.test
