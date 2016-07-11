@@ -3,6 +3,12 @@
 
 from prompt_toolkit.contrib.completers import WordCompleter
 
-MGOCompleter = WordCompleter([
-    'create', 'select', 'insert', 'drop',
-    'delete', 'from', 'where', 'table'], ignore_case=True)
+# TODO remove \c ?
+keywords = [
+    # sql
+    'create', 'select', 'insert', 'drop', 'delete', 'from', 'where', 'table',
+    # custom
+    '\c help', '\c set'
+]
+
+MGOCompleter = WordCompleter(keywords, ignore_case=True)

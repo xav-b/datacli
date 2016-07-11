@@ -21,3 +21,8 @@
 * [x] precise project scope and rename it
 * [x] Register drill container on registry
 * [x] Document usage
+
+== Notes ==
+
+* What to do with sqlparse ?
+* Get collections/tables/buckets list and add them to auto completion

@@ -1,7 +1,5 @@
 # Common.mk
 # vim:ft=make
-#
-#  Python configuration  ######################################################
 
 .PHONY: install
 install.std: ## standard python setup
@@ -37,3 +35,11 @@ clean: ## remove buid artifacts and temporary files
 	find . -name '__pycache__' -exec rm -rf {} +
 	find . -name '*.pyo' -exec rm -f {} +
 	find . -name '*~' -exec rm -f {} +
+
+# TODO TEST flag instead
+release.test: ## simulate package upload on pypi
+	python setup.py sdist upload -r pypitest
+	make clean
+
+release: ## release new package version
+	@python setup.py sdist upload -r pypi
