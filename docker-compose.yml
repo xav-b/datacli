@@ -3,10 +3,19 @@ version: '2'
 services:
 
   mongo:
-    image: mongo:3.0.6
+    build: ./tools/mongodb
     ports:
       - 27017:27017
     command: mongod --smallfiles
+
+  drill:
+    build: ./tools/drill
+    stdin_open: true
+    tty: true
+    links:
+      - mongo
+    ports:
+      - 8047:8047
 
   lab:
     stdin_open: true
@@ -17,5 +26,7 @@ services:
       - .:/app
     links:
       - mongo
+      - drill
     environment:
       - PYTHONPATH=/app
+      - PYDRILL_HOST=drill

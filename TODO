@@ -1,0 +1,28 @@
+# vi: ft=vimwiki
+
+== Todo - In order of priority ==
+
+* [ ] string templating and global options management
+* [ ] custom commands
+* [ ] Challenge MongoDB interface with tricky queries, and implement defensive code
+* [ ] proper SQL and custom commands completion
+* [ ] don't crash on exceptions
+* [ ] Properly define ipython shell
+* [ ] proper cli flags for tools/drill/manage.sh
+* [ ] Test other data sources
+* [ ] help command
+* [ ] Use proper `.env`
+* [ ] Emulate the connection to a database with drill data source registration
+* [ ] use codecov (harmonize coverage and pytest --cov)
+* [x] register on pypy
+* [x] write tests and use Travis
+* [x] fix `make clean`
+* [x] Add setuptools scripts
+* [x] precise project scope and rename it
+* [x] Register drill container on registry
+* [x] Document usage
+
+== Notes ==
+
+* What to do with sqlparse ?
+* Get collections/tables/buckets list and add them to auto completion
